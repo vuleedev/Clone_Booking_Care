@@ -35,7 +35,6 @@ let getEditCRUD = async (req, res) => {
   const id = req.query.id;
   if (id) {
     const userData = await crudService.getUserById(id);
-    // console.log(userData);
 
     if (userData) {
       return res.render("editcrud.ejs", { user: userData });

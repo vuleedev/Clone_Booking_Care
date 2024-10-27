@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"; // Import gói cors
 import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
 import initWebRoutes from "./router/web";
@@ -7,30 +8,17 @@ require("dotenv").config();
 
 let app = express();
 
+// Cấu hình CORS
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    credentials: true,
+  })
+);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-  );
-
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).json({});
-  }
-
-  next();
-});
 
 viewEngine(app);
 initWebRoutes(app);
@@ -38,7 +26,6 @@ initWebRoutes(app);
 connectDB();
 
 let port = process.env.PORT || 8080;
-
 app.listen(port, () => {
   console.log("Backend node running on the port: ", port);
 });
